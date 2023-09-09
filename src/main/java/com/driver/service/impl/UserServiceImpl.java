@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService{
         userEntity.setLastName(user.getLastName());
         userEntity.setEmail(user.getEmail());
         String userId = String.valueOf(new SecureRandom());
-        userEntity.setUserId( userId);
         userEntity = userRepository.save(userEntity); // save DB
         user.setUserId(userEntity.getUserId());
         return user;
@@ -44,7 +43,6 @@ public class UserServiceImpl implements UserService{
         userDto.setLastName(userEntity.getLastName());
         userDto.setEmail(userEntity.getEmail());
         userDto.setUserId( userEntity.getUserId());
-        userDto.setId(userEntity.getId());
 
         return userDto;
     }
@@ -62,7 +60,7 @@ public class UserServiceImpl implements UserService{
         userDto.setLastName(userEntity.getLastName());
         userDto.setEmail(userEntity.getEmail());
         userDto.setUserId( userEntity.getUserId());
-        userDto.setId(userEntity.getId());
+
 
         return userDto;
 
@@ -80,7 +78,7 @@ public class UserServiceImpl implements UserService{
         userEntity.setLastName(user.getLastName());
         userEntity.setEmail(user.getEmail());
         userEntity = userRepository.save(userEntity);
-        user.setId(userEntity.getId());
+        user.setUserId(userEntity.getUserId());
         return user;
     }
 
@@ -91,8 +89,7 @@ public class UserServiceImpl implements UserService{
         if( userEntity == null ){ // user not found
             throw new Exception(userId+" not valid");
         }
-        Long id =  userEntity.getId();
-        userRepository.deleteById(id);
+        userRepository.delete(userEntity);
     }
 
     @Override

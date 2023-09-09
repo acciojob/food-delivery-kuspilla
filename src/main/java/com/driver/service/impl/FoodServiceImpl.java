@@ -6,6 +6,8 @@ import com.driver.io.entity.FoodEntity;
 import com.driver.io.repository.FoodRepository;
 import com.driver.service.FoodService;
 import com.driver.shared.dto.FoodDto;
+import io.swagger.models.auth.In;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,14 +53,18 @@ public class FoodServiceImpl implements FoodService{
     public FoodDto updateFoodDetails(String foodId, FoodDto foodDetails) throws Exception {
         FoodEntity foodEntity = foodRepository.findByFoodId(foodId);
         if(foodEntity == null ){ // not foodId present
-            throw new Exception(foodId+" in valid Id");
+            throw new Exception(foodId);
         }
+        foodEntity.setFoodPrice(foodDetails.getFoodPrice());
+        foodEntity.setFoodCategory(foodDetails.getFoodCategory());
+        foodEntity.setFoodName(foodDetails.getFoodName());
 
-        BeanUtils.copyProperties(foodDetails, foodEntity);
         foodEntity = foodRepository.save(foodEntity);
-        foodDetails.setId(foodEntity.getId());
+        FoodDto foodDto = new FoodDto();
+        ModelMapper modelMapper = new ModelMapper();
+        foodDto = modelMapper.map(foodDto, FoodDto.class);
 
-        return foodDetails;
+        return foodDto;
     }
 
     @Override
@@ -67,8 +73,7 @@ public class FoodServiceImpl implements FoodService{
         if(foodEntity == null ) {// invalid id
             throw new Exception(id + " is not valid");
         }
-        Long foodId = foodEntity.getId();
-        foodRepository.deleteById(foodId);
+        foodRepository.delete(foodEntity);
     }
 
     @Override

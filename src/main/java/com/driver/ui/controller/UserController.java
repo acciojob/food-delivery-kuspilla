@@ -32,7 +32,7 @@ public class UserController {
 		UserDto userDto  = userService.getUser(id);
 		UserResponse userResponse = new UserResponse();
 		BeanUtils.copyProperties(userDto,userResponse);
-		return new UserResponse();
+		return userResponse;
 	}
 
 	@PostMapping()
@@ -60,16 +60,26 @@ public class UserController {
 
 		OperationStatusModel operationStatusModel = new OperationStatusModel();
 		UserDto userDto = new UserDto();
-		  userService.deleteUser(id);
-		  operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
-		return operationStatusModel;
+		try {
+			userService.deleteUser(id);
+			operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
+			return operationStatusModel;
+		}
+		catch (Exception e){
+			operationStatusModel.setOperationResult(RequestOperationStatus.ERROR.name());
+			return operationStatusModel;
+		}
 	}
 	
 	@GetMapping()
 	public List<UserResponse> getUsers(){
        List<UserResponse> userResponsesList = new ArrayList<>();
 	   List<UserDto> userDtoList = userService.getUsers();
-	   BeanUtils.copyProperties(userDtoList,userResponsesList);
+	   for(UserDto temp : userDtoList){
+		   UserResponse userResponse = new UserResponse();
+		   BeanUtils.copyProperties(temp,userResponse);
+		   userResponsesList.add(userResponse);
+	   }
 
 		return userResponsesList;
 	}

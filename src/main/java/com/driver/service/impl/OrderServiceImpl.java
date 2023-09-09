@@ -62,7 +62,7 @@ import java.util.List;
         if( orderEntity == null ){
             throw new Exception(orderId);
         }
-        orderRepository.findByOrderId(orderId);
+        orderRepository.delete(orderEntity);
     }
 
     @Override
